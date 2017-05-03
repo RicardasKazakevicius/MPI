@@ -8,8 +8,8 @@ int main(int argc, char **argv) {
 	int rank, size;
 	
 	MPI_Init(&argc, &argv);
-	MPI_Comn_rank(MPI_COM_WORLD, &rank);
-	MPI_Comn_size(MPI_COM_WORLD, &size);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	
 	int intervalSize = n / size;
 	
@@ -28,16 +28,16 @@ int main(int argc, char **argv) {
 	
 	if (rank == 0) {
 		for (int i = 1; i < size; ++i) {
-			for (j = 0; j < intervalSize; ++j) {
+			for (int j = 0; j < intervalSize; ++j) {
 				arr[j] = array[index];
 				++index;
 			}
-			MPI_Send(arr, 1, MPI_LONG, 0, 123, MPI_COM_WORLD);
+			MPI_Send(arr, 1, MPI_LONG, 0, 123, MPI_COMM_WORLD);
 		}
-	} else {	
+	} else { 		MPI_Status status;
 		for (int i = 1; i < size; ++i) {
 			if (rank == i) {
-				MPI_Recv( arr, 1, MPI_LONG, 0, 123, MPI_COM_WORLD, &status);
+				MPI_Recv( arr, 1, MPI_LONG, 0, 123, MPI_COMM_WORLD, &status);
 				for (int j = 0; j < sizeof(arr)/sizeof(int); j++) {
 				
 					number = arr[j];
